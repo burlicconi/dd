@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monster race</title>
+</head>
+<body>
+    <form id="monster_race" method="POST" action="{% url 'race' %}">
+    {% csrf_token %}
+        <div id="name_id" >
+            <p class="input_label">Ime</p>
+            {{ form.name }}
+        </div>
+
+        <div id="features_id" >
+            <p class="input_label">Features</p>
+            {{ form.features }}
+        </div>
+
+        <div id="traits_id" >
+            <p class="input_label">Traits</p>
+            {{ form.traits }}
+        </div>
+
+        <div id="weaknesses_id" >
+            <p class="input_label">Weaknesses</p>
+            {{ form.weaknesses }}
+        </div>
+
+        <div id="image_id" >
+            <p class="input_label">Image</p>
+            {{ form.image }}
+        </div>
+
+        <div id="form_footer">
+            <input id="monster_race_id" type="submit" class="form_button_input" value="Save" />
+        </div>
+    </form>
+
+</body>
+</html>
