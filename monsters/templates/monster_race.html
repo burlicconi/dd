@@ -1,15 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Monster race</title>
-</head>
-<body>
+{% extends 'extended_base.html' %}
+{% block content %}
+
+{% if messages %}
+
+{% for message in messages %}
+{% if message.tags == "error" %}
+<div class="">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p class=""> {{ message }}</p>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+
+
     <form id="monster_race" method="POST" action="{% url 'race' %}">
     {% csrf_token %}
-        <div id="name_id" >
-            <p class="input_label">Ime</p>
-            {{ form.name }}
+        {{form}}
+
+        <div class="form-group row">
+            <label for="name_id" class="col-sm-2 col-form-label">Ime</label>
+            <div class="col-sm-4">
+
+                    {{form.name}}
+            </div>
+
+            </div>
         </div>
 
         <div id="features_id" >
@@ -39,3 +56,5 @@
 
 </body>
 </html>
+
+{% endblock %}

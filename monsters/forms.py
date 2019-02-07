@@ -5,10 +5,10 @@ from monsters.models import MonsterRace
 
 class MonsterRaceForm(ModelForm):
     name = CharField(widget=TextInput(), max_length=50, error_messages={'required': 'Obavezno unesite ime!'})
-    features = CharField(widget=TextInput(), max_length=5000)
-    traits = CharField(widget=TextInput(), max_length=5000)
-    weaknesses = CharField(widget=TextInput(), max_length=5000)
-    image = CharField(widget=TextInput(), max_length=50)
+    features = CharField(widget=TextInput(), max_length=5000, required=False)
+    traits = CharField(widget=TextInput(), max_length=5000, required=False)
+    weaknesses = CharField(widget=TextInput(), max_length=5000, required=False)
+    image = CharField(widget=TextInput(), max_length=50, required=False)
 
     class Meta:
         model = MonsterRace

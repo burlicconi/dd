@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views import View
@@ -14,6 +15,18 @@ class MonsterRace(CreateView):
 
     def get(self, request):
         context = {}
+        return render(request, 'monster_race.html', context)
+
+    def post(self, request):
+        form = get_form(self.form_class)
+        if form.is_valid():
+            print('valid')
+            form.save()
+        else:
+            print('erori')
+            for error in form.errors:
+                messages.add_message(request, messages.ERROR, form.errors[error][0])
+        context = {'message': 'caos'}
         return render(request, 'monster_race.html', context)
 
 
