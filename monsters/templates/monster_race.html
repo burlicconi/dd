@@ -5,6 +5,12 @@
 
 {% for message in messages %}
 {% if message.tags == "error" %}
+<div class="" xmlns="http://www.w3.org/1999/html">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p class=""> {{ message }}</p>
+</div>
+{% endif %}
+{% if message.tags == "success" %}
 <div class="">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     <p class=""> {{ message }}</p>
@@ -15,42 +21,23 @@
 {% endif %}
 
 
-    <form id="monster_race" method="POST" action="{% url 'race' %}">
+    <form id="monster_race" style="background-color:#66B2FF" class="container table table-striped col-sm-4" method="POST" action="{% url 'race' %}" enctype="multipart/form-data">
+
     {% csrf_token %}
-        {{form}}
+        <table>
+             <tbody>
+                {% for field in form %}
+                <tr>
+                    <th scope="col" class="col-sm-4">{{field.label}}</th>
+                    <th scope="col">{{field}}</th>
+                </tr>
+                {% endfor %}
 
-        <div class="form-group row">
-            <label for="name_id" class="col-sm-2 col-form-label">Ime</label>
-            <div class="col-sm-4">
-
-                    {{form.name}}
-            </div>
-
-            </div>
-        </div>
-
-        <div id="features_id" >
-            <p class="input_label">Features</p>
-            {{ form.features }}
-        </div>
-
-        <div id="traits_id" >
-            <p class="input_label">Traits</p>
-            {{ form.traits }}
-        </div>
-
-        <div id="weaknesses_id" >
-            <p class="input_label">Weaknesses</p>
-            {{ form.weaknesses }}
-        </div>
-
-        <div id="image_id" >
-            <p class="input_label">Image</p>
-            {{ form.image }}
-        </div>
+            </tbody>
+        </table>
 
         <div id="form_footer">
-            <input id="monster_race_id" type="submit" class="form_button_input" value="Save" />
+            <input id="monster_race_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
         </div>
     </form>
 
