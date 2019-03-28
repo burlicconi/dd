@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Sign in
+{% endblock %}
+
+{% block content %}
+    <div id="loginform" class="text-center" style="margin-top:10px" >
+        <form method="post" action="">
+            {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal">Please, sign in</h1>
+            {{ form.username.label_tag }}<br/>
+            {{ form.username }}<br/>
+            <br/>
+            {{ form.password.label_tag }}<br/>
+            {{ form.password }}<br/>
+            <input id="run_plan" type="submit" class="btn btn-primary btn-sm" value="Sign in" style="margin-top:10px;"/>
+       </form>
+    </div>
+{% endblock %}
+

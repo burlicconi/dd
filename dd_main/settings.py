@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'monsters'
+    'monsters',
+    'dd_main',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +118,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LOGIN_REDIRECT_URL = '/monsters/'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
 
 
 # Static files (CSS, JavaScript, Images)
