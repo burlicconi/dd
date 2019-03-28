@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'monsters',
     'dd_main',
+    'monsters',
+
 ]
 
 MIDDLEWARE = [
@@ -119,7 +120,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOGIN_REDIRECT_URL = '/monsters/'
+LOGIN_REDIRECT_URL = '/starting_page/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 

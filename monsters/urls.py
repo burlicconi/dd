@@ -17,7 +17,9 @@ Including another URLconf
 from django.urls import path
 
 from .views import (Monster,
-                    Monsters, MonsterRace, MonsterRaces)
+                    Monsters,
+                    MonsterRace,
+                    MonsterRaces)
 
 urlpatterns = [
     path(r'', Monsters.as_view(), name='monsters'),
