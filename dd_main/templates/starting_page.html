@@ -1,16 +1,42 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
-Starting page
+Почетак
 {% endblock %}
 
 {% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Starting page</title>
+    <title>Почетак</title>
 </head>
 <body>
+
+<div class="d-flex justify-content-around">
+
+    <div class="card" style="width: 18rem;">
+        <img src="{% static "images/background1.jpg" %}" class="card-img-top" alt="..."
+        height="{{ card.card_h }}" width="{{ card.card_w }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ race.title }}</h5>
+            <p class="card-text">{{ race.desc }}</p>
+            <a href="/monsters/races" class="btn btn-primary">{{ race.link }}</a>
+        </div>
+    </div>
+
+    <div class="card" style="width: 18rem;">
+        <img src="{% static "images/background1.jpg" %}" class="card-img-top" alt="..."
+        height="{{ card.card_h }}" width="{{ card.card_w }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ monsters.title }}</h5>
+            <p class="card-text">{{ monsters.desc }}</p>
+            <a href="/monsters" class="btn btn-primary">{{ monsters.link }}</a>
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>
