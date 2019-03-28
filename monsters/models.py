@@ -8,6 +8,7 @@ class MonsterRace(models.Model):
     traits = models.CharField(max_length=5000, null=True, blank=True)
     weaknesses = models.CharField(max_length=5000, null=True, blank=True)
     image_path = models.CharField(max_length=150, null=True, blank=True)
+    gdrive_id = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -23,6 +24,7 @@ class Monster(models.Model):
     note = models.CharField(max_length=5000, null=True, blank=True)
     image = models.CharField(max_length=50, null=True, blank=True)
     sound = models.CharField(max_length=50, null=True, blank=True)
+    gdrive_id = models.CharField(max_length=50, null=True, blank=True)
 
     def __unicode__(self):
         return "{} ({})".format(self.name, self.race)

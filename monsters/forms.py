@@ -37,18 +37,23 @@ class MonsterRaceForm(ModelForm):
                            required=False,
                            label="Putanja do slike",)
 
+    gdrive_id = CharField(widget=HiddenInput(attrs=create_attrs('gdrive_id')),
+                           max_length=50,
+                           required=False,
+                           label="GDrive ID",)
+
     image = ImageField(required=False,
                        label="Slika",)
 
     class Meta:
         model = MonsterRace
-        fields = ['name', 'features', 'traits', 'weaknesses', 'image_path']
+        fields = ['name', 'features', 'traits', 'weaknesses', 'image_path', 'gdrive_id']
         labels = {
             'name': 'Ime',
             'features': 'Osobine',
             'traits': 'Svojstva',
             'weaknesses': 'Slabosti',
-            'image_path': 'Slika'
+            'image': 'Slika'
         }
 
     def __init__(self,*args,**kwargs):
