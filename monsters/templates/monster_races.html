@@ -1,3 +1,26 @@
+{% extends 'monsters_extended_base.html' %}
+{% block content %}
+
+{% if messages %}
+
+{% for message in messages %}
+{% if message.tags == "error" %}
+<div class="" xmlns="http://www.w3.org/1999/html">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p class=""> {{ message }}</p>
+</div>
+{% endif %}
+{% if message.tags == "success" %}
+<div class="">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p class=""> {{ message }}</p>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +28,9 @@
     <title>Monster races</title>
 </head>
 <body>
-
+    <a href="/monsters/race" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">Додај расу</a>
 </body>
 </html>
+
+
+{% endblock %}
