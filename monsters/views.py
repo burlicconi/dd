@@ -1,15 +1,18 @@
 import logging
 
+import os
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.template import RequestContext, Context
 from django.views import View
 from django.views.generic import (ListView,
                                   CreateView)
 
 import monsters.models as models
+from dd_main import settings
 from gdrive_util import (handle_uploaded_file,
-                         find_file_in_folder,
-                         create_path_for_image)
+                         create_path_for_image,
+                         download_file_from_drive)
 from monsters.forms import MonsterRaceForm
 
 logger = logging.getLogger('file_info')
@@ -26,7 +29,22 @@ def copy_form_add_update_field(request, form_class: View, field_name: str, new_v
     form_copy = form_class.form_class(request.POST.copy())
     form_copy.data[field_name] = new_value
     return form_copy
-    # create_path_for_image(name=type_name)
+
+
+def prepare_image(local_path: str, gdrive_id: str) -> str:
+    """
+
+    :param local_path: path on local storage
+    :param gdrive_id: google drive id for this image
+    :return: path to image file- should be always local_path; if image is not present, then download it from gdrive
+    """
+    if not os.path.isfile(os.path.join(settings.MEDIA_ROOT, local_path)):
+        if gdrive_id is not None:
+            download_file_from_drive(file_id=gdrive_id, path=local_path)
+        else:
+            local_path = None
+            return local_path
+    return os.path.join(local_path)
 
 
 class MonsterRace(CreateView):
@@ -39,13 +57,15 @@ class MonsterRace(CreateView):
         return form
 
     def get(self, request, pk=None):
-        #find_file_in_folder('ml1')
+        # find_file_in_folder('ml1')
         if pk is not None:
             monster_race = models.MonsterRace.objects.get(pk=pk)
-            form = MonsterRaceForm(monster_race)
+            if monster_race.image_path is not None:
+                monster_race.image_path = prepare_image(monster_race.image_path, monster_race.gdrive_id)
+            form = MonsterRaceForm(instance=monster_race)
         else:
             form = MonsterRaceForm()
-        return render(request, 'monster_race.html', {'form': form})
+        return render(request, 'monster_race.html', {'form': form, 'monster_image': monster_race.image_path})
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -61,10 +81,10 @@ class MonsterRace(CreateView):
                         logger.error('handle_uploaded_file failed: ' + str(exc))
                         messages.add_message(request, messages.ERROR, 'Cuvanje slike nije uspelo!')
                         return render(request, 'monster_race.html')
-                    monster_race = form_copy.save()
+                    form_copy.save()
                     logger.info('Monster race successfully added to database on: '.format(path_to_save))
                     messages.add_message(request, messages.SUCCESS, 'Uspesno sacuvano!')
-                    return self.get(request, type_name)
+                    return redirect('/monsters/race/{}'.format(type_name))
         logger.warning('Form had some errors')
         add_error_messages(request, form.errors)
         return render(request, 'monster_race.html')

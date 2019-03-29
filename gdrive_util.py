@@ -79,13 +79,6 @@ def create_file_on_gdrive(file_path: str, parent_ids: list):
     except Exception as exc:
         logger.error('inserting image on GDrive failed: ' + str(exc))
 
-# file_metadata = {'title': 'A.png'}
-# media = MediaFileUpload('media/images/monsters/A/A.png',
-#                         mimetype='image/jpeg')
-# file = drive_service.files().insert(body=file_metadata,
-#                                     media_body=media,
-#                                     fields='id').execute()
-
 
 def create_folder_on_gdrive(name: str, parent_id: str =None) -> str:
     file_metadata = {
@@ -222,6 +215,7 @@ def download_file_from_drive(name: str, path: str):
     while done is False:
         status, done = downloader.next_chunk()
         print("Download %d%%." % int(status.progress() * 100))
+    logger.info('Downloaded file from gdrive with ID = {}'.format(file_id))
     directory = os.path.dirname(os.path.join(settings.MEDIA_ROOT, path))
     if not os.path.exists(directory):
         try:
@@ -235,5 +229,38 @@ def download_file_from_drive(name: str, path: str):
         except Exception as exc:
             logger.error('Writing file from gdrive failed ' + str(exc))
             raise exc
+    return True
+
+
+def download_file_from_drive(file_id: str, path: str):
+    """
+
+    :param file_id: ID of file on gdrive
+    :param path: path where to save on local storage
+    :return:
+    """
+    request = drive_service.files().get_media(fileId=file_id)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while done is False:
+        status, done = downloader.next_chunk()
+        print("Download %d%%." % int(status.progress() * 100))
+    logger.info('Downloaded file from gdrive with ID = {}'.format(file_id))
+    directory = os.path.dirname(os.path.join(settings.MEDIA_ROOT, path))
+    if not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except Exception as exc:
+            logger.error('makedirs failed: ' + str(exc))
+            raise exc
+    with open(os.path.join(settings.MEDIA_ROOT, 'gdrive/gdrive.png'), "wb+") as f:
+        try:
+            f.write(fh.getvalue())
+        except Exception as exc:
+            logger.error('Writing file from gdrive failed ' + str(exc))
+            raise exc
+    return True
+
 
 

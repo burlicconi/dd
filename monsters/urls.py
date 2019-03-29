@@ -26,4 +26,5 @@ urlpatterns = [
     path(r'', Monster.as_view(), name='monster'),
     path(r'races', MonsterRaces.as_view(), name='races'),
     path(r'race', MonsterRace.as_view(), name='race'),
+    path('race/<str:pk>', MonsterRace.as_view(), name='race'),
 ]
