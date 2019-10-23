@@ -95,7 +95,8 @@ def create_folder_on_gdrive(name: str, parent_id: str =None) -> str:
 
 def create_folders_od_gdrive(folders_list: list, parent_id: str = None) -> str:
     """
-    creates folder with name from 1st elem in list, then creates 2nd folder with 2nd name in list etc...
+    creates folder with name from 1st elem in list,
+        then creates 2nd folder with 2nd name in list etc...
     :param folders_list:
     :param parent_id:
     :return:
@@ -105,14 +106,17 @@ def create_folders_od_gdrive(folders_list: list, parent_id: str = None) -> str:
         if parent_id is None:
             parent_id = create_folder_on_gdrive(folder)
         else:
-            parent_id = create_folder_on_gdrive(name=folder, parent_id=parent_id)
+            parent_id = create_folder_on_gdrive(name=folder,
+                                                parent_id=parent_id)
         created_folders_ids.append(parent_id)
     return created_folders_ids
 
 
-def retrieve_or_create_folders_od_gdrive(folders_list: list, parent_id: str = None) -> str:
+def retrieve_or_create_folders_od_gdrive(folders_list: list,
+                                         parent_id: str = None) -> str:
     """
-    :param folders_list: list of nested folders that either should be retrieved or created if they don't exist
+    :param folders_list: list of nested folders that either should be retrieved
+        or created if they don't exist
     :param parent_id: parent folder for this list of folders
     :return:
     """
@@ -121,14 +125,19 @@ def retrieve_or_create_folders_od_gdrive(folders_list: list, parent_id: str = No
         if parent_id is None:
             parent_id = 'root'
         folder_id = find_folder_in_parent_folder(folders_list[0], parent_id)
-        if folder_id is None: # if folder does not exist, create new folder in parent folder
+        if folder_id is None:
+            # if folder does not exist, create new folder in parent folder
             folder_id = create_folder_on_gdrive(folders_list[0], parent_id)
         ids.append(folder_id)
         if len(folders_list) > 1:
             for i in range (1, len(folders_list)):
-                folder_id = find_folder_in_parent_folder(folders_list[i], ids[-1])
-                if folder_id is None: # if folder does not exist, create new folder in parent folder
-                    folder_id = create_folder_on_gdrive(folders_list[i], ids[-1])
+                folder_id = find_folder_in_parent_folder(folders_list[i],
+                                                         ids[-1])
+                if folder_id is None:
+                    # if folder does not exist,
+                    # create new folder in parent folder
+                    folder_id = create_folder_on_gdrive(folders_list[i],
+                                                        ids[-1])
                 ids.append(folder_id)
         return ids
 
@@ -136,15 +145,26 @@ def retrieve_or_create_folders_od_gdrive(folders_list: list, parent_id: str = No
 def create_path_for_image(type: str = None, name: str = None) -> str:
     try:
         if type is None:
-            return os.path.join('images', BASE_PATH_MONSTERS, str(name), str(name)) + '.png'
+            return os.path.join('images',
+                                BASE_PATH_MONSTERS,
+                                str(name),
+                                str(name)) + '.png'
         else:
-            return os.path.join('images', BASE_PATH_MONSTERS, str(type)) + '.png'
+            return os.path.join('images',
+                                BASE_PATH_MONSTERS,
+                                str(type)) + '.png'
     except Exception as exc:
         logger.error('creating path for moster image failed: ' + str(exc))
         raise exc
 
 
 def handle_uploaded_file(file, file_path: str):
+    """
+    saves uploaded file to file system and then uploads file to gdrive
+    :param file:
+    :param file_path:
+    :return:
+    """
     if file is None:
         return
     directory = os.path.dirname(os.path.join(settings.MEDIA_ROOT, file_path))
@@ -156,15 +176,17 @@ def handle_uploaded_file(file, file_path: str):
         except Exception as exc:
             logger.error('makedirs failed: ' + str(exc))
             raise exc
-    with open(os.path.join(settings.MEDIA_ROOT, file_path), 'wb+') as destination:
+    with open(os.path.join(settings.MEDIA_ROOT, file_path), 'wb+') as dest:
         try:
             for chunk in file.chunks():
-                destination.write(chunk)
+                dest.write(chunk)
         except Exception as exc:
             logger.error('Writing image file failed: ' + str(exc))
             raise exc
         # Add file to GDrive
-        created_folders_ids = retrieve_or_create_folders_od_gdrive(folders_list=file_path.split('/')[:-1])
+        created_folders_ids = retrieve_or_create_folders_od_gdrive(
+            folders_list=file_path.split('/')[:-1]
+        )
         create_file_on_gdrive(file_path, created_folders_ids)
 
 
@@ -175,10 +197,13 @@ def find_folder_by_name(name: str) -> str:
     :return: folder id
     """
     try:
-        result = drive_service.files().list(q='name="{}" and mimeType = "application/vnd.google-apps.folder"'.format(name)).execute()
+        result = drive_service.files().list(
+            q='name="{}" and mimeType = "application/vnd.google-apps.folder"'
+              ''.format(name)).execute()
         return result['files'][0]['id']
     except Exception as exc:
-        logger.error('Could not find folder on GDrive with name {} '.format(name)+ '; ' + str(exc))
+        logger.error('Could not find folder on GDrive with name {}'
+                     ' '.format(name)+ '; ' + str(exc))
         return None
 
 
@@ -191,9 +216,14 @@ def find_file_in_folder(name: str) -> str:
 def find_folder_in_parent_folder(folder_name: str, parent_name: str) -> str:
     folder_id = find_folder_by_name(parent_name)
     if folder_id is not None:
-        result = drive_service.files().list(q='name = "{}" and "{}" in parents'.format(folder_name, folder_id)).execute()
+        result = drive_service.files().list(q='name = "{}" and "{}" in parents'
+                                              ''.format(
+                                                    folder_name,
+                                                    folder_id)
+                                                ).execute()
     else:
-        result = drive_service.files().list(q='name = "{}"'.format(folder_name)).execute()
+        result = drive_service.files().list(q='name = "{}"'
+                                              ''.format(folder_name)).execute()
     if len(result['files']) > 0:
         return result['files'][0]['id']
     else:
@@ -223,7 +253,9 @@ def download_file_from_drive(name: str, path: str):
         except Exception as exc:
             logger.error('makedirs failed: ' + str(exc))
             raise exc
-    with open(os.path.join(settings.MEDIA_ROOT, 'gdrive/gdrive.png'), "wb+") as f:
+    with open(os.path.join(settings.MEDIA_ROOT,
+                           'gdrive/gdrive.png'),
+              "wb+") as f:
         try:
             f.write(fh.getvalue())
         except Exception as exc:
@@ -254,13 +286,12 @@ def download_file_from_drive(file_id: str, path: str):
         except Exception as exc:
             logger.error('makedirs failed: ' + str(exc))
             raise exc
-    with open(os.path.join(settings.MEDIA_ROOT, 'gdrive/gdrive.png'), "wb+") as f:
+    with open(os.path.join(settings.MEDIA_ROOT,
+                           'gdrive/gdrive.png'),
+              "wb+") as f:
         try:
             f.write(fh.getvalue())
         except Exception as exc:
             logger.error('Writing file from gdrive failed ' + str(exc))
             raise exc
     return True
-
-
-

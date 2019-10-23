@@ -81,18 +81,18 @@ class MonsterRace(CreateView):
             form = self.form_class(request.POST)
         if form.is_valid():
             # @todo think about updating images
-            # type_name = request.POST.get('name', None)
-            # if type_name is not None:
-            #     path_to_save = create_path_for_image(name=type_name)
-            #     form = copy_form_add_update_field(request, self, 'image_path',
-            #                                    path_to_save)
+            type_name = request.POST.get('name', None)
+            if type_name is not None:
+                path_to_save = create_path_for_image(name=type_name)
+                form = copy_form_add_update_field(request, self, 'image_path',
+                                               path_to_save)
             if form.is_valid():
-                # try:
-                #     handle_uploaded_file(request.FILES.get('image', None), path_to_save)
-                # except Exception as exc:
-                #     logger.error('handle_uploaded_file failed: ' + str(exc))
-                #     messages.add_message(request, messages.ERROR, 'Cuvanje slike nije uspelo!')
-                #     return render(request, 'monster_race.html')
+                try:
+                    handle_uploaded_file(request.FILES.get('image', None), path_to_save)
+                except Exception as exc:
+                    logger.error('handle_uploaded_file failed: ' + str(exc))
+                    messages.add_message(request, messages.ERROR, 'Cuvanje slike nije uspelo!')
+                    return render(request, 'monster_race.html')
                 saved_object = form.save()
                 logger.info('Monster race {} successfully updated in '
                             'database '.format(form.fields['name']))
