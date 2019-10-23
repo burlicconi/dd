@@ -25,7 +25,6 @@ def get_creds():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    # if os.path.exists('token.pickle'):
     creds = None
     if os.path.exists(os.path.join(settings.BASE_DIR, 'token.pickle')):
         with open(os.path.join(settings.BASE_DIR, 'token.pickle'), 'rb') as token:
