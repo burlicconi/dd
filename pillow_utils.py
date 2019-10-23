@@ -1,72 +1,69 @@
 from PIL import Image
 import os.path
-from io import StringIO
+
+from dd_main import settings
 
 
-def thumbnail(filename, size=(50, 50), output_filename=None):
-    image = Image.open(filename)
+def create_thumbnail_path(path_to_save, image_name, image_format: str):
+    """
+    creates path where to store thumbnail image
+    :param path_to_save:
+    :param image_name:
+    :param image_format:
+    :return:
+    """
+    directory = os.path.dirname(os.path.join(settings.MEDIA_ROOT,
+                                             path_to_save))
+    output_name = image_name + '_thumb' + image_format
+    return os.path.join(directory, output_name)
+
+
+def calculate_thumb_size(max_size, image_size):
+    """
+    calculates max size of thumbnail image to avoid deformations
+    :param max_size: max size of thumbnail
+    :param image_size: original image size
+    :return: size of thumbnail image
+    """
+    if image_size[0] < max_size[0] and image_size[1] < max_size[1]:
+        return image_size
+    ratio_width = image_size[0]/max_size[0]
+    ratio_heigh = image_size[1]/max_size[1]
+    if ratio_width > ratio_heigh:
+        w = max_size[0]
+        h = image_size[1] / ratio_width
+    else:
+        h = max_size[1]
+        w = image_size[0] / ratio_heigh
+    return int(w), int(h)
+
+
+def thumbnail(path_to_save, image_name, max_size):
+    """
+    creates thumbnail from image
+    :param path_to_save:  path where to save thumbnail and where original
+        image is
+    :param image_name: name of original image
+    :param max_size: max size for thumbnail - if original image is larger,
+    it will be cut to fit max size w/o deformations
+    :return: path of thumbnail image
+    """
+    full_path = os.path.join(settings.MEDIA_ROOT, path_to_save)
+    image = Image.open(full_path)
+    output_path = create_thumbnail_path(path_to_save,
+                                        image_name,
+                                        full_path[full_path.index('.'):])
+    thumb_size = calculate_thumb_size(max_size, image.size)
+
     if image.mode not in ('L', 'RGB'):
         image = image.convert('RGB')
-    image = image.resize(size, Image.ANTIALIAS)
+    image = image.resize(thumb_size, Image.ANTIALIAS)
 
     # get the thumbnail data in memory.
-    if not output_filename:
-        output_filename = get_default_thumbnail_filename(filename)
-    image.save(output_filename, image.format)
-    return output_filename
+    image.save(output_path, quality=95)
+    relative_path = os.path.relpath(output_path, settings.MEDIA_ROOT)
+    return relative_path
 
 
-def thumbnail_string(buf, size=(50, 50)):
-    f = StringIO(buf)
-    image = Image.open(f)
-    if image.mode not in ('L', 'RGB'):
-        image = image.convert('RGB')
-    image = image.resize(size, Image.ANTIALIAS)
-    o = StringIO()
-    image.save(o, "JPEG")
-    return o.getvalue()
-
-
-def get_default_thumbnail_filename(filename):
-    path, ext = os.path.splitext(filename)
-    return path + '.thumb.jpg'
-
-
-def rescale(data, width, height, force=True):
-    """Rescale the given image, optionally cropping it to make sure the result image has the specified width and height."""
-
-
-    max_width = width
-    max_height = height
-
-    input_file = StringIO(data)
-    img = Image.open(input_file)
-    if not force:
-        img.thumbnail((max_width, max_height), Image.ANTIALIAS)
-    else:
-        src_width, src_height = img.size
-        src_ratio = float(src_width) / float(src_height)
-        dst_width, dst_height = max_width, max_height
-        dst_ratio = float(dst_width) / float(dst_height)
-
-        if dst_ratio < src_ratio:
-            crop_height = src_height
-            crop_width = crop_height * dst_ratio
-            x_offset = float(src_width - crop_width) / 2
-            y_offset = 0
-        else:
-            crop_width = src_width
-            crop_height = crop_width / dst_ratio
-            x_offset = 0
-            y_offset = float(src_height - crop_height) / 3
-        img = img.crop((x_offset, y_offset, x_offset+int(crop_width), y_offset+int(crop_height)))
-        img = img.resize((dst_width, dst_height), Image.ANTIALIAS)
-
-    tmp = StringIO()
-    img.save(tmp, 'JPEG')
-    tmp.seek(0)
-    output_data = tmp.getvalue()
-    input_file.close()
-    tmp.close()
-
-    return output_data
+size = calculate_thumb_size((300, 150), (600, 1500))
+print(size)

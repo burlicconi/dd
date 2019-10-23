@@ -6,36 +6,35 @@
 <div class="d-flex justify-content-around">
     <div>
         {% if not details.monster_id %}
-            <form id="monster_race" style="background-color:#66B2FF" class="container table table-striped " method="POST" action="{% url 'race' %}" enctype="multipart/form-data">
+        <form id="monster_race" style="background-color:#66B2FF" class="container table table-striped " method="POST" action="{% url 'race' %}" enctype="multipart/form-data">
         {% else %}
-                <form id="monster_race" style="background-color:#66B2FF"
-                      class="container table table-striped " method="POST"
-                      action="{% url 'race' details.monster_id %}"
-                      enctype="multipart/form-data">
+        <form id="monster_race" style="background-color:#66B2FF"
+              class="container table table-striped " method="POST"
+              action="{% url 'race' details.monster_id %}"
+              enctype="multipart/form-data">
         {% endif %}
             {% csrf_token %}
-            <table>
-                 <tbody>
-                    {% for field in form %}
+                <table>
+                     <tbody>
+                        {% for field in form %}
 
-                    <tr {{ field.field.widget.input_type }}>
-                        <th scope="col" class="col-sm-4">{{field.label}}</th>
-                        <th scope="col">{{field}}</th>
-                    </tr>
-                    {% endfor %}
+                        <tr {{ field.field.widget.input_type }}>
+                            <th scope="col" class="col-sm-4">{{field.label}}</th>
+                            <th scope="col">{{field}}</th>
+                        </tr>
+                        {% endfor %}
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
             <div id="form_footer">
                 <input id="monster_race_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
             </div>
         </form>
     </div>
-    {{MEDIA_URL}}{{monster_image}}
 
     <div class="container ">
-        <img src='/media/{{monster_image}}' >
+        <img src='/media/{{details.monster_image}}' >
     </div>
 </div>
 

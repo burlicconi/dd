@@ -182,11 +182,18 @@ def handle_uploaded_file(file, file_path: str):
         except Exception as exc:
             logger.error('Writing image file failed: ' + str(exc))
             raise exc
-        # Add file to GDrive
-        created_folders_ids = retrieve_or_create_folders_od_gdrive(
-            folders_list=file_path.split('/')[:-1]
-        )
-        create_file_on_gdrive(file_path, created_folders_ids)
+
+
+def upload_file_to_gdrive(file_path: str):
+    """
+    uploads file from path to gdrive
+    it will create folders on gdrive to match full path
+    :param file_path: path to save on gdrive
+    """
+    created_folders_ids = retrieve_or_create_folders_od_gdrive(
+        folders_list=file_path.split('/')[:-1]
+    )
+    create_file_on_gdrive(file_path, created_folders_ids)
 
 
 def find_folder_by_name(name: str) -> str:
@@ -202,7 +209,7 @@ def find_folder_by_name(name: str) -> str:
         return result['files'][0]['id']
     except Exception as exc:
         logger.error('Could not find folder on GDrive with name {}'
-                     ' '.format(name)+ '; ' + str(exc))
+                     ' '.format(name) + '; ' + str(exc))
         return None
 
 
@@ -263,34 +270,34 @@ def download_file_from_drive(name: str, path: str):
     return True
 
 
-def download_file_from_drive(file_id: str, path: str):
-    """
-
-    :param file_id: ID of file on gdrive
-    :param path: path where to save on local storage
-    :return:
-    """
-    request = drive_service.files().get_media(fileId=file_id)
-    fh = io.BytesIO()
-    downloader = MediaIoBaseDownload(fh, request)
-    done = False
-    while done is False:
-        status, done = downloader.next_chunk()
-        print("Download %d%%." % int(status.progress() * 100))
-    logger.info('Downloaded file from gdrive with ID = {}'.format(file_id))
-    directory = os.path.dirname(os.path.join(settings.MEDIA_ROOT, path))
-    if not os.path.exists(directory):
-        try:
-            os.makedirs(directory)
-        except Exception as exc:
-            logger.error('makedirs failed: ' + str(exc))
-            raise exc
-    with open(os.path.join(settings.MEDIA_ROOT,
-                           'gdrive/gdrive.png'),
-              "wb+") as f:
-        try:
-            f.write(fh.getvalue())
-        except Exception as exc:
-            logger.error('Writing file from gdrive failed ' + str(exc))
-            raise exc
-    return True
+# def download_file_from_drive(file_id: str, path: str):
+#     """
+#
+#     :param file_id: ID of file on gdrive
+#     :param path: path where to save on local storage
+#     :return:
+#     """
+#     request = drive_service.files().get_media(fileId=file_id)
+#     fh = io.BytesIO()
+#     downloader = MediaIoBaseDownload(fh, request)
+#     done = False
+#     while done is False:
+#         status, done = downloader.next_chunk()
+#         print("Download %d%%." % int(status.progress() * 100))
+#     logger.info('Downloaded file from gdrive with ID = {}'.format(file_id))
+#     directory = os.path.dirname(os.path.join(settings.MEDIA_ROOT, path))
+#     if not os.path.exists(directory):
+#         try:
+#             os.makedirs(directory)
+#         except Exception as exc:
+#             logger.error('makedirs failed: ' + str(exc))
+#             raise exc
+#     with open(os.path.join(settings.MEDIA_ROOT,
+#                            'gdrive/gdrive.png'),
+#               "wb+") as f:
+#         try:
+#             f.write(fh.getvalue())
+#         except Exception as exc:
+#             logger.error('Writing file from gdrive failed ' + str(exc))
+#             raise exc
+#     return True

@@ -7,11 +7,13 @@ from django.views import View
 from django.views.generic import (ListView,
                                   CreateView)
 
+from dd_main.parameters import THUMB_SIZE
 from monsters.models import MonsterRace as races_model
 from dd_main import settings
 from gdrive_util import (handle_uploaded_file,
                          create_path_for_image,
-                         download_file_from_drive)
+                         download_file_from_drive, upload_file_to_gdrive)
+from pillow_utils import thumbnail
 from monsters.forms import MonsterRaceForm
 
 logger = logging.getLogger('file_info')
@@ -24,7 +26,8 @@ def add_error_messages(request, errors):
         messages.add_message(request, messages.ERROR, errors[error][0])
 
 
-def copy_form_add_update_field(request, form_class: View, field_name: str, new_value: str):
+def copy_form_add_update_field(request, form_class: View,
+                               field_name: str, new_value: str):
     form_copy = form_class.form_class(request.POST.copy())
     form_copy.data[field_name] = new_value
     return form_copy
@@ -65,7 +68,7 @@ class MonsterRace(CreateView):
                     monster_race.image_path,
                     monster_race.gdrive_id)
             form = MonsterRaceForm(instance=monster_race)
-            details = {'monster_image': None,
+            details = {'monster_image': monster_race.image_path,
                        'monster_id': monster_race.id}
         else:  # pk is None, create Monster Race
             form = MonsterRaceForm()
@@ -80,23 +83,32 @@ class MonsterRace(CreateView):
         else:
             form = self.form_class(request.POST)
         if form.is_valid():
-            # @todo think about updating images
             type_name = request.POST.get('name', None)
             if type_name is not None:
                 path_to_save = create_path_for_image(name=type_name)
-                form = copy_form_add_update_field(request, self, 'image_path',
-                                               path_to_save)
             if form.is_valid():
                 try:
-                    handle_uploaded_file(request.FILES.get('image', None), path_to_save)
+                    handle_uploaded_file(request.FILES.get('image', None),
+                                         path_to_save)
+                    thumb = thumbnail(path_to_save=path_to_save,
+                                      image_name=type_name,
+                                      max_size=THUMB_SIZE)
+                    form = copy_form_add_update_field(request,
+                                                      self,
+                                                      'image_path',
+                                                      thumb)
+                    upload_file_to_gdrive(thumb)
+                    os.remove(os.path.join(settings.MEDIA_ROOT, path_to_save))
                 except Exception as exc:
                     logger.error('handle_uploaded_file failed: ' + str(exc))
-                    messages.add_message(request, messages.ERROR, 'Cuvanje slike nije uspelo!')
+                    messages.add_message(request, messages.ERROR,
+                                         'Cuvanje slike nije uspelo!')
                     return render(request, 'monster_race.html')
                 saved_object = form.save()
                 logger.info('Monster race {} successfully updated in '
                             'database '.format(form.fields['name']))
-                messages.add_message(request, messages.SUCCESS, 'Uspesno sacuvano!')
+                messages.add_message(request, messages.SUCCESS,
+                                     'Uspesno sacuvano!')
                 return redirect('/monsters/race/{}'.format(saved_object.pk))
         logger.warning('Form had some errors')
         add_error_messages(request, form.errors)
