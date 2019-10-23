@@ -1,46 +1,43 @@
 {% extends 'monsters_extended_base.html' %}
 {% block content %}
 
-{% if messages %}
 
-{% for message in messages %}
-{% if message.tags == "error" %}
-<div class="" xmlns="http://www.w3.org/1999/html">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <p class=""> {{ message }}</p>
+
+<div class="d-flex justify-content-around">
+    <div>
+        {% if not details.monster_id %}
+            <form id="monster_race" style="background-color:#66B2FF" class="container table table-striped " method="POST" action="{% url 'race' %}" enctype="multipart/form-data">
+        {% else %}
+                <form id="monster_race" style="background-color:#66B2FF"
+                      class="container table table-striped " method="POST"
+                      action="{% url 'race' details.monster_id %}"
+                      enctype="multipart/form-data">
+        {% endif %}
+            {% csrf_token %}
+            <table>
+                 <tbody>
+                    {% for field in form %}
+
+                    <tr {{ field.field.widget.input_type }}>
+                        <th scope="col" class="col-sm-4">{{field.label}}</th>
+                        <th scope="col">{{field}}</th>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+            <div id="form_footer">
+                <input id="monster_race_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
+            </div>
+        </form>
+    </div>
+    {{MEDIA_URL}}{{monster_image}}
+
+    <div class="container ">
+        <img src='/media/{{monster_image}}' >
+    </div>
 </div>
-{% endif %}
-{% if message.tags == "success" %}
-<div class="">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    <p class=""> {{ message }}</p>
-</div>
-{% endif %}
-{% endfor %}
-
-{% endif %}
-
-
-    <form id="monster_race" style="background-color:#66B2FF" class="container table table-striped col-sm-4" method="POST" action="{% url 'race' %}" enctype="multipart/form-data">
-
-    {% csrf_token %}
-        <table>
-             <tbody>
-                {% for field in form %}
-
-                <tr {{ field.field.widget.input_type }}>
-                    <th scope="col" class="col-sm-4">{{field.label}}</th>
-                    <th scope="col">{{field}}</th>
-                </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
-
-        <div id="form_footer">
-            <input id="monster_race_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
-        </div>
-    </form>
 
 </body>
 </html>

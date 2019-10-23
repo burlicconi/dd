@@ -3,12 +3,11 @@ import logging
 import os
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.template import RequestContext, Context
 from django.views import View
 from django.views.generic import (ListView,
                                   CreateView)
 
-import monsters.models as models
+from monsters.models import MonsterRace as races_model
 from dd_main import settings
 from gdrive_util import (handle_uploaded_file,
                          create_path_for_image,
@@ -36,7 +35,8 @@ def prepare_image(local_path: str, gdrive_id: str) -> str:
 
     :param local_path: path on local storage
     :param gdrive_id: google drive id for this image
-    :return: path to image file- should be always local_path; if image is not present, then download it from gdrive
+    :return: path to image file- should be always local_path; if image
+    is not present, then download it from gdrive
     """
     if not os.path.isfile(os.path.join(settings.MEDIA_ROOT, local_path)):
         if gdrive_id is not None:
@@ -59,32 +59,45 @@ class MonsterRace(CreateView):
     def get(self, request, pk=None):
         # find_file_in_folder('ml1')
         if pk is not None:
-            monster_race = models.MonsterRace.objects.get(pk=pk)
-            if monster_race.image_path is not None:
-                monster_race.image_path = prepare_image(monster_race.image_path, monster_race.gdrive_id)
+            monster_race = races_model.objects.get(pk=pk)
+            if monster_race.image_path:
+                monster_race.image_path = prepare_image(
+                    monster_race.image_path,
+                    monster_race.gdrive_id)
             form = MonsterRaceForm(instance=monster_race)
-        else:
+            details = {'monster_image': None,
+                       'monster_id': monster_race.id}
+        else:  # pk is None, create Monster Race
             form = MonsterRaceForm()
-        return render(request, 'monster_race.html', {'form': form, 'monster_image': monster_race.image_path})
+            details = {'monster_image': None,}
+        return render(request, 'monster_race.html', {'form': form,
+                                                     'details': details})
 
-    def post(self, request):
-        form = self.form_class(request.POST)
+    def post(self, request, pk=None):
+        if pk is not None:
+            race = races_model.objects.get(pk=pk)
+            form = MonsterRaceForm(request.POST, instance=race)
+        else:
+            form = self.form_class(request.POST)
         if form.is_valid():
-            type_name = request.POST.get('name', None)
-            if type_name is not None:
-                path_to_save = create_path_for_image(name=type_name)
-                form_copy = copy_form_add_update_field(request, self, 'image_path', path_to_save)
-                if form_copy.is_valid():
-                    try:
-                        handle_uploaded_file(request.FILES.get('image', None), path_to_save)
-                    except Exception as exc:
-                        logger.error('handle_uploaded_file failed: ' + str(exc))
-                        messages.add_message(request, messages.ERROR, 'Cuvanje slike nije uspelo!')
-                        return render(request, 'monster_race.html')
-                    form_copy.save()
-                    logger.info('Monster race successfully added to database on: '.format(path_to_save))
-                    messages.add_message(request, messages.SUCCESS, 'Uspesno sacuvano!')
-                    return redirect('/monsters/race/{}'.format(type_name))
+            # @todo think about updating images
+            # type_name = request.POST.get('name', None)
+            # if type_name is not None:
+            #     path_to_save = create_path_for_image(name=type_name)
+            #     form = copy_form_add_update_field(request, self, 'image_path',
+            #                                    path_to_save)
+            if form.is_valid():
+                # try:
+                #     handle_uploaded_file(request.FILES.get('image', None), path_to_save)
+                # except Exception as exc:
+                #     logger.error('handle_uploaded_file failed: ' + str(exc))
+                #     messages.add_message(request, messages.ERROR, 'Cuvanje slike nije uspelo!')
+                #     return render(request, 'monster_race.html')
+                saved_object = form.save()
+                logger.info('Monster race {} successfully updated in '
+                            'database '.format(form.fields['name']))
+                messages.add_message(request, messages.SUCCESS, 'Uspesno sacuvano!')
+                return redirect('/monsters/race/{}'.format(saved_object.pk))
         logger.warning('Form had some errors')
         add_error_messages(request, form.errors)
         return render(request, 'monster_race.html')

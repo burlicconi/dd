@@ -2,7 +2,7 @@ from django.forms import (ModelForm,
                           CharField,
                           TextInput,
                           ImageField,
-                          HiddenInput)
+                          HiddenInput, IntegerField)
 
 from monsters.models import MonsterRace
 
@@ -12,6 +12,10 @@ def create_attrs(id: str) -> dict:
 
 
 class MonsterRaceForm(ModelForm):
+    id = IntegerField(widget=HiddenInput(attrs=create_attrs('id')),
+                           required=False,
+                           label="id",)
+
     name = CharField(widget=TextInput(attrs=create_attrs('name')),
                      max_length=50,
                      error_messages={'required': 'Obavezno unesite ime!'},
@@ -47,7 +51,8 @@ class MonsterRaceForm(ModelForm):
 
     class Meta:
         model = MonsterRace
-        fields = ['name', 'features', 'traits', 'weaknesses', 'image_path', 'gdrive_id']
+        fields = ['id', 'name', 'features', 'traits', 'weaknesses',
+                  'image_path', 'gdrive_id']
         labels = {
             'name': 'Ime',
             'features': 'Osobine',
@@ -56,5 +61,5 @@ class MonsterRaceForm(ModelForm):
             'image': 'Slika'
         }
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
