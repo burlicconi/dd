@@ -1,10 +1,70 @@
+{% extends 'monsters_extended_base.html' %}
+{% block title %}
+Чудовишта
+{% endblock %}
+{% block content %}
+
+{% if messages %}
+
+{% for message in messages %}
+{% if message.tags == "error" %}
+<div class="" xmlns="http://www.w3.org/1999/html">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p class=""> {{ message }}</p>
+</div>
+{% endif %}
+{% if message.tags == "success" %}
+<div class="">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <p class=""> {{ message }}</p>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Monsters</title>
+    <title>Monster races</title>
 </head>
 <body>
+<table class="table table-striped" style="color:white;">
+    <thead>
+    <tr>
+        <font color="red">
+            <th scope="col">#</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Раса</th>
+            <th scope="col">Подраса</th>
+            <th scope="col">Опис</th>
+            <th scope="col">Специјално</th>
+            <th scope="col">Белешка</th>
+        </font>
+    </tr>
+    </thead>
+    <tbody>
+    {% for one in all %}
+    <tr>
+        <th scope="row">{{rowcount}}</th>
+        <td><a href="{% url 'monster' one.id %}">{{one.name}}</a></td>
+        <td><a href="{% url 'monster' one.id %}">{{one.race}}</a></td>
+        <td><a href="{% url 'monster' one.id %}">{{one.subrace}}</a></td>
+        <td><a href="{% url 'monster' one.id %}">{{one.description}}</a></td>
+        <td><a href="{% url 'monster' one.id %}">{{one.special}}</a></td>
+        <td><a href="{% url 'monster' one.id %}">{{one.note}}</a></td>
+    </tr>
+    {% endfor %}
 
+    </tbody>
+</table>
+<a href="/monsters/monster" class="btn btn-outline-primary"
+   style="color:white;"
+   tabindex="-1" role="button" aria-disabled="true">Додај чудовиште</a>
 </body>
 </html>
+
+
+{% endblock %}

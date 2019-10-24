@@ -6,7 +6,10 @@
 <div class="d-flex justify-content-around">
     <div>
         {% if not details.monster_id %}
-        <form id="monster_race" style="background-color:#66B2FF" class="container table table-striped " method="POST" action="{% url 'race' %}" enctype="multipart/form-data">
+        <form id="monster_race" style="background-color:#66B2FF"
+              class="container table table-striped "
+              method="POST" action="{% url 'race' %}"
+              enctype="multipart/form-data">
         {% else %}
         <form id="monster_race" style="background-color:#66B2FF"
               class="container table table-striped " method="POST"
@@ -34,7 +37,7 @@
     </div>
 
     <div class="container ">
-        <img src='/media/{{details.monster_image}}' >
+        <img src='/media/{{details.monster_race_image}}' >
     </div>
 </div>
 

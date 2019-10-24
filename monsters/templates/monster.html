@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Monster</title>
-</head>
-<body>
+{% extends 'monsters_extended_base.html' %}
+{% block content %}
+
+
+
+<div class="d-flex justify-content-around">
+    <div>
+        {% if not details.monster_id %}
+        <form id="monster" style="background-color:#66B2FF"
+              class="container table table-striped " method="POST"
+              action="{% url 'monster' %}"
+              enctype="multipart/form-data">
+            {% else %}
+            <form id="monster" style="background-color:#66B2FF"
+                  class="container table table-striped " method="POST"
+                  action="{% url 'monster' details.monster_id %}"
+                  enctype="multipart/form-data">
+                {% endif %}
+                {% csrf_token %}
+                <table>
+                    <tbody>
+                    {% for field in form %}
+
+                    <tr {{ field.field.widget.input_type }}>
+                        <th scope="col" class="col-sm-4">{{field.label}}</th>
+                        <th scope="col">{{field}}</th>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+                <div id="form_footer">
+                    <input id="monster_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
+                </div>
+            </form>
+    </div>
+
+    <div class="container ">
+        <img src='/media/{{details.monster_image}}' >
+    </div>
+</div>
 
 </body>
 </html>
+
+{% endblock %}

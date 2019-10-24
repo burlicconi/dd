@@ -22,8 +22,12 @@ from .views import (Monster,
                     MonsterRaces)
 
 urlpatterns = [
+    # Monsters
     path(r'', Monsters.as_view(), name='monsters'),
-    path(r'', Monster.as_view(), name='monster'),
+    path(r'monster', Monster.as_view(), name='monster'),
+    path('monster/<str:pk>', Monster.as_view(), name='monster'),
+
+    # Monster race
     path(r'races', MonsterRaces.as_view(), name='races'),
     path(r'race', MonsterRace.as_view(), name='race'),
     path('race/<str:pk>', MonsterRace.as_view(), name='race'),

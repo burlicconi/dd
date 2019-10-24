@@ -33,10 +33,10 @@
         <tr>
             <font color="red">
             <th scope="col">#</th>
-            <th scope="col">Ime</th>
-            <th scope="col">Osobine</th>
-            <th scope="col">Svojstva</th>
-            <th scope="col">Slabosti</th>
+            <th scope="col">Име</th>
+            <th scope="col">Особине</th>
+            <th scope="col">Својства</th>
+            <th scope="col">Слабости</th>
             </font>
         </tr>
         </thead>
@@ -44,10 +44,10 @@
             {% for one in all %}
             <tr>
                 <th scope="row">{{rowcount}}</th>
-                <td>{{one.name}}</td>
-                <td>{{one.features}}</td>
-                <td>{{one.traits}}</td>
-                <td>{{one.weaknesses}}</td>
+                <td><a href="{% url 'race' one.id %}">{{one.name}}</a></td>
+                <td><a href="{% url 'race' one.id %}">{{one.features}}</a></td>
+                <td><a href="{% url 'race' one.id %}">{{one.traits}}</a></td>
+                <td><a href="{% url 'race' one.id %}">{{one.weaknesses}}</a></td>
             </tr>
             {% endfor %}
 
