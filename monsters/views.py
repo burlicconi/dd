@@ -11,10 +11,10 @@ from dd_main.parameters import THUMB_SIZE
 from monsters.models import (MonsterRace as races_model,
                              Monster as monsters_model)
 from dd_main import settings
-from gdrive_util import (handle_uploaded_file,
-                         create_path_for_image,
-                         download_file_from_drive, upload_file_to_gdrive)
-from pillow_utils import thumbnail
+from util.gdrive_util import (handle_uploaded_file,
+                              create_path_for_image,
+                              download_file_from_drive, upload_file_to_gdrive)
+from util.pillow_utils import thumbnail
 from monsters.forms import MonsterRaceForm, MonsterForm
 
 logger = logging.getLogger('file_info')

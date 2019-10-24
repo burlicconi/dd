@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dd_main',
     'monsters',
-
+    'heroes',
 ]
 
 MIDDLEWARE = [
