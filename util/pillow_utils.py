@@ -63,7 +63,3 @@ def thumbnail(path_to_save, image_name, max_size):
     image.save(output_path, quality=95)
     relative_path = os.path.relpath(output_path, settings.MEDIA_ROOT)
     return relative_path
-
-
-size = calculate_thumb_size((300, 150), (600, 1500))
-print(size)
