@@ -60,7 +60,6 @@ class MonsterRace(CreateView):
         return form
 
     def get(self, request, pk=None):
-        # find_file_in_folder('ml1')
         if pk is not None:
             monster_race = races_model.objects.get(pk=pk)
             if monster_race.image_path:
@@ -72,7 +71,7 @@ class MonsterRace(CreateView):
                        'monster_id': monster_race.id}
         else:  # pk is None, create Monster Race
             form = MonsterRaceForm()
-            details = {'monster_image': None,}
+            details = {'monster_image': None, }
         return render(request, 'monster_race.html', {'form': form,
                                                      'details': details})
 
@@ -117,7 +116,8 @@ class MonsterRace(CreateView):
 
 class MonsterRaces(ListView):
     def get(self, request):
-        context = {}
+        all = races_model.objects.all()
+        context = {'all': all}
         return render(request, 'monster_races.html', context)
 
 

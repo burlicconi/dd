@@ -28,7 +28,33 @@
     <title>Monster races</title>
 </head>
 <body>
-    <a href="/monsters/race" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">Додај расу</a>
+    <table class="table table-striped" style="color:white;">
+        <thead>
+        <tr>
+            <font color="red">
+            <th scope="col">#</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Osobine</th>
+            <th scope="col">Svojstva</th>
+            <th scope="col">Slabosti</th>
+            </font>
+        </tr>
+        </thead>
+        <tbody>
+            {% for one in all %}
+            <tr>
+                <th scope="row">{{rowcount}}</th>
+                <td>{{one.name}}</td>
+                <td>{{one.features}}</td>
+                <td>{{one.traits}}</td>
+                <td>{{one.weaknesses}}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <a href="/monsters/race" class="btn btn-outline-primary" style="color:white;"
+       tabindex="-1" role="button" aria-disabled="true">Додај расу</a>
 </body>
 </html>
 
