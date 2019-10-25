@@ -5,19 +5,19 @@
     <div class="d-flex justify-content-around">
         {% if not details.npchero_id %}
         <form id="npchero" style="background-color:#66B2FF"
-              class="container table table-striped col-sm-5 d-flex justify-content-around"
+              class="container table table-striped d-flex justify-content-around"
               method="POST"
               action="{% url 'npchero' %}"
               enctype="multipart/form-data">
         {% else %}
         <form id="npchero" style="background-color:#66B2FF"
-              class="container table table-striped  col-sm-5 d-flex justify-content-around"
+              class="container table table-striped d-flex justify-content-around"
               method="POST"
               action="{% url 'npchero' details.npchero_id %}"
               enctype="multipart/form-data">
         {% endif %}
         {% csrf_token %}
-            <div class="col-sm-7">
+            <div class="col-sm-6">
             <table >
                 <tbody>
                     <tr hidden>
@@ -75,7 +75,7 @@
             </div>
 
 
-        <div class="col-sm-5">
+        <div class="col-sm-6">
             <table>
                 <tbody>
                 <tr {{ form.str.widget.input_type }}>
@@ -115,7 +115,7 @@
         </div>
         </form>
 
-        <div class="container col-sm-7">
+        <div class="container col-sm-6">
             <img src='/media/{{details.npchero_image}}' >
         </div>
 
