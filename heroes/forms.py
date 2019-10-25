@@ -15,7 +15,7 @@ from monsters.models import MonsterRace
 from util.forms_utils import create_attrs
 
 
-class NPCHero(ModelForm):
+class NPCHeroForm(ModelForm):
     id = IntegerField(widget=HiddenInput(attrs=create_attrs('id')),
                       required=False,
                       label="id",)

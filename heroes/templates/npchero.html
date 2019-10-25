@@ -2,46 +2,124 @@
 {% block content %}
 
 
-
-<div class="d-flex justify-content-around">
-    <div>
+    <div class="d-flex justify-content-around">
         {% if not details.npchero_id %}
         <form id="npchero" style="background-color:#66B2FF"
-              class="container table table-striped " method="POST"
+              class="container table table-striped col-sm-5 d-flex justify-content-around"
+              method="POST"
               action="{% url 'npchero' %}"
               enctype="multipart/form-data">
-            {% else %}
-            <form id="monster" style="background-color:#66B2FF"
-                  class="container table table-striped " method="POST"
-                  action="{% url 'npchero' details.npchero_id %}"
-                  enctype="multipart/form-data">
-                {% endif %}
-                {% csrf_token %}
-                <table>
-                    <tbody>
-                    {% for field in form %}
-
-                    <tr {{ field.field.widget.input_type }}>
-                        <th scope="col" class="col-sm-4">{{field.label}}</th>
-                        <th scope="col">{{field}}</th>
+        {% else %}
+        <form id="npchero" style="background-color:#66B2FF"
+              class="container table table-striped  col-sm-5 d-flex justify-content-around"
+              method="POST"
+              action="{% url 'npchero' details.npchero_id %}"
+              enctype="multipart/form-data">
+        {% endif %}
+        {% csrf_token %}
+            <div class="col-sm-7">
+            <table >
+                <tbody>
+                    <tr hidden>
+                        <th >{{form.id.label}}</th>
+                        <th>{{form.id}}</th>
                     </tr>
-                    {% endfor %}
 
-                    </tbody>
-                </table>
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.name.label}}</th>
+                        <th>{{form.name}}</th>
+                    </tr>
 
-                <div id="form_footer">
-                    <input id="monster_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
-                </div>
-            </form>
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.race.label}}</th>
+                        <th>{{form.race}}</th>
+                    </tr>
+
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.description.label}}</th>
+                        <th>{{form.description}}</th>
+                    </tr>
+
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.special.label}}</th>
+                        <th>{{form.special}}</th>
+                    </tr>
+
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.note.label}}</th>
+                        <th>{{form.note}}</th>
+                    </tr>
+
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.image.label}}</th>
+                        <th>{{form.image}}</th>
+                    </tr>
+
+                    <tr {{ form.name.widget.input_type }}>
+                        <th >{{form.sound.label}}</th>
+                        <th>{{form.sound}}</th>
+                    </tr>
+
+                    <tr hidden>
+                        <th >{{form.image_path.label}}</th>
+                        <th>{{form.image_path}}</th>
+                    </tr>
+
+                    <tr hidden>
+                        <th >{{form.gdrive_id.label}}</th>
+                        <th>{{form.gdrive_id}}</th>
+                    </tr>
+
+                </tbody>
+            </table>
+            </div>
+
+
+        <div class="col-sm-5">
+            <table>
+                <tbody>
+                <tr {{ form.str.widget.input_type }}>
+                    <th >{{form.str.label}}</th>
+                    <th>{{form.str}}</th>
+                </tr>
+
+                <tr {{ form.dex.widget.input_type }}>
+                    <th >{{form.dex.label}}</th>
+                    <th>{{form.dex}}</th>
+                </tr>
+
+                <tr {{ form.con.widget.input_type }}>
+                    <th >{{form.con.label}}</th>
+                    <th>{{form.con}}</th>
+                </tr>
+
+                <tr {{ form.int.widget.input_type }}>
+                    <th >{{form.int.label}}</th>
+                    <th>{{form.int}}</th>
+                </tr>
+
+                <tr {{ form.wis.widget.input_type }}>
+                    <th >{{form.wis.label}}</th>
+                    <th>{{form.wis}}</th>
+                </tr>
+
+                <tr {{ form.cha.widget.input_type }}>
+                    <th >{{form.cha.label}}</th>
+                    <th>{{form.cha}}</th>
+                </tr>
+                </tbody>
+            </table>
+            <div id="form_footer">
+                <input id="monster_id" type="submit" class="btn btn-primary" value="Sačuvaj" />
+            </div>
+        </div>
+        </form>
+
+        <div class="container col-sm-7">
+            <img src='/media/{{details.npchero_image}}' >
+        </div>
+
     </div>
 
-    <div class="container ">
-        <img src='/media/{{details.npchero_image}}' >
-    </div>
-</div>
-
-</body>
-</html>
 
 {% endblock %}
